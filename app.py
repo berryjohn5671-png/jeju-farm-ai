@@ -36,8 +36,6 @@ print(API_KEY)
 
 
 # 환경변수 우선, 없으면 config 파일 사용
-os.environ['KMA_SHORT_API_KEY'] = os.getenv('KMA_SHORT_API_KEY', SHORT_TERM_API_KEY)
-os.environ['KMA_MID_API_KEY'] = os.getenv('KMA_MID_API_KEY', MID_TERM_API_KEY)
 
 
 # ============================================
