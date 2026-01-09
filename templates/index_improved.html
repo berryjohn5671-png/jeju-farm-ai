@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제주 농민 AI 도우미 🍊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #ff7675 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Animated background elements */
+    body::before {
+        content: '🍊';
+        position: fixed;
+        font-size: 100px;
+        opacity: 0.1;
+        top: 10%;
+        left: 5%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    body::after {
+        content: '🌱';
+        position: fixed;
+        font-size: 80px;
+        opacity: 0.1;
+        bottom: 15%;
+        right: 8%;
+        animation: float 8s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 40px);
+        backdrop-filter: blur(10px);
+    }
+
+    .header {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-emoji {
+        font-size: 40px;
+        animation: bounce-emoji 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce-emoji {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+
+    .header p {
+        font-size: 15px;
+        opacity: 0.95;
+        font-weight: 400;
+        margin-bottom: 15px;
+    }
+
+    .header-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 15px;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .header-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+        background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: relative;
+    }
+
+    .message {
+        display: flex;
+        gap: 15px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .message.user {
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 3px solid white;
+    }
+
+    .message.user .message-avatar {
+        background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+    }
+
+    .message.ai .message-avatar {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    }
+
+    .message-content-wrapper {
+        display: flex;
+        flex-direction: column;
+        max-width: 70%;
+    }
+
+    .message-content {
+        padding: 16px 20px;
+        border-radius: 20px;
+        line-height: 1.7;
+        word-wrap: break-word;
+        position: relative;
+    }
+
+    .message.user .message-content {
+        background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+        color: white;
+        border-bottom-right-radius: 6px;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+
+    .message.ai .message-content {
+        background: white;
+        color: #2c3e50;
+        border: 2px solid #f0f0f0;
+        border-bottom-left-radius: 6px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .message-time {
+        font-size: 11px;
+        color: #999;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .message.user .message-time {
+        justify-content: flex-end;
+    }
+
+    .input-container {
+        padding: 25px 30px;
+        background: white;
+        border-top: 2px solid #f0f0f0;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    #question {
+        flex: 1;
+        padding: 16px 24px;
+        border: 2px solid #e0e0e0;
+        border-radius: 30px;
+        font-size: 15px;
+        font-family: 'Noto Sans KR', sans-serif;
+        transition: all 0.3s ease;
+        outline: none;
+        background: #fafafa;
+    }
+
+    #question:focus {
+        border-color: #ff6b35;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+    }
+
+    #sendBtn {
+        padding: 16px 32px;
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans KR', sans-serif;
+        white-space: nowrap;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    }
+
+    #sendBtn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    }
+
+    #sendBtn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    #sendBtn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .loading {
+        display: flex;
+        gap: 8px;
+        padding: 10px 0;
+    }
+
+    .loading-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ff6b35;
+        animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .loading-dot:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+
+    .loading-dot:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+        0%, 80%, 100% {
+            transform: scale(0);
+            opacity: 0.5;
+        }
+        40% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .welcome-message {
+        text-align: center;
+        padding: 60px 30px;
+        color: #666;
+        max-width: 700px;
+        margin: auto;
+    }
+
+    .welcome-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        animation: wave 2s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(20deg);
+        }
+        75% {
+            transform: rotate(-20deg);
+        }
+    }
+
+    .welcome-message h2 {
+        color: #ff6b35;
+        margin-bottom: 15px;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .welcome-message p {
+        margin-bottom: 35px;
+        line-height: 1.8;
+        font-size: 16px;
+        color: #555;
+    }
+
+    .suggestion-chips {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .chip {
+        padding: 14px 20px;
+        background: white;
+        border: 2px solid #ff6b35;
+        color: #ff6b35;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .chip:hover {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+    }
+
+    .chip:active {
+        transform: translateY(-1px);
+    }
+
+    .clear-btn, .export-btn {
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 25px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+    }
+
+    .clear-btn:hover, .export-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: translateY(-2px);
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #2c3e50;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        animation: slideInRight 0.4s ease, slideOutRight 0.4s ease 2.6s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            border-radius: 0;
+            height: 100vh;
+        }
+
+        body {
+            padding: 0;
+        }
+
+        .message-content-wrapper {
+            max-width: 80%;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header-emoji {
+            font-size: 32px;
+        }
+
+        .chat-container {
+            padding: 20px 15px;
+        }
+
+        .input-container {
+            padding: 20px 15px;
+        }
+
+        .suggestion-chips {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-message {
+            padding: 40px 20px;
+        }
+
+        .welcome-icon {
+            font-size: 60px;
+        }
+
+        .header-stats {
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+
+    /* Scrollbar styling */
+    .chat-container::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        border-radius: 10px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+    }
+
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+        font-style: italic;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>
+                    <span class="header-emoji">🍊</span>
+                    제주 농민 AI 도우미
+                </h1>
+                <p>귤 농사부터 토양 관리까지, 무엇이든 물어보세요</p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span>💬</span>
+                        <span id="messageCount">0개의 대화</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>✨</span>
+                        <span>AI 기반 농업 조언</span>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button class="clear-btn" onclick="clearChat()">🗑️ 대화 초기화</button>
+                    <button class="export-btn" onclick="exportChat()">📥 대화 저장</button>
+                </div>
+            </div>
+        </div>
+
+```
+    <div class="chat-container" id="chatContainer">
+        <div class="welcome-message" id="welcomeMessage">
+            <div class="welcome-icon">👋</div>
+            <h2>안녕하세요!</h2>
+            <p>제주 농민을 위한 AI 도우미입니다.<br>
+            농사와 관련된 모든 질문을 편하게 해주세요.<br>
+            실시간으로 정확한 답변을 제공해드립니다.</p>
+            <div class="suggestion-chips">
+                <div class="chip" onclick="askSuggestion('귤 재배 시기가 언제인가요?')">
+                    <span>🍊</span>
+                    <span>귤 재배 시기</span>
+                </div>
+                <div class="chip" onclick="askSuggestion('토양 pH 관리 방법을 알려주세요')">
+                    <span>🌱</span>
+                    <span>토양 관리</span>
+                </div>
+                <div class="chip" onclick="askSuggestion('병해충 예방은 어떻게 하나요?')">
+                    <span>🐛</span>
+                    <span>병해충 예방</span>
+                </div>
+                <div class="chip" onclick="askSuggestion('비료는 언제 주는 게 좋나요?')">
+                    <span>💧</span>
+                    <span>비료 시기</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-container">
+        <input 
+            type="text" 
+            id="question" 
+            placeholder="농사 관련 질문을 입력하세요..." 
+            onkeypress="if(event.key === 'Enter') ask()"
+        />
+        <button id="sendBtn" onclick="ask()">
+            <span id="sendBtnText">전송 📤</span>
+        </button>
+    </div>
+</div>
+
+<script>
+    let chatHistory = [];
+
+    // Load chat history from localStorage on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        loadChatHistory();
+        updateMessageCount();
+    });
+
+    function loadChatHistory() {
+        const saved = localStorage.getItem('jejuFarmerChat');
+        if (saved) {
+            chatHistory = JSON.parse(saved);
+            displayChatHistory();
+        }
+    }
+
+    function saveChatHistory() {
+        localStorage.setItem('jejuFarmerChat', JSON.stringify(chatHistory));
+        updateMessageCount();
+    }
+
+    function updateMessageCount() {
+        const count = chatHistory.length;
+        document.getElementById('messageCount').textContent = `${count}개의 대화`;
+    }
+
+    function displayChatHistory() {
+        const container = document.getElementById('chatContainer');
+        const welcomeMsg = document.getElementById('welcomeMessage');
+        
+        if (chatHistory.length > 0) {
+            welcomeMsg.style.display = 'none';
+            
+            chatHistory.forEach(item => {
+                addMessageToUI('user', item.question, item.timestamp);
+                addMessageToUI('ai', item.answer, item.timestamp);
+            });
+            
+            scrollToBottom();
+        }
+    }
+
+    function addMessageToUI(type, content, timestamp) {
+        const container = document.getElementById('chatContainer');
+        const welcomeMsg = document.getElementById('welcomeMessage');
+        
+        if (welcomeMsg) {
+            welcomeMsg.style.display = 'none';
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = type === 'user' ? '👨‍🌾' : '🤖';
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'message-content-wrapper';
+
+        const messageBubble = document.createElement('div');
+        messageBubble.className = 'message-content';
+        messageBubble.textContent = content;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.innerHTML = `<span>🕐</span> ${timestamp || getCurrentTime()}`;
+
+        contentWrapper.appendChild(messageBubble);
+        contentWrapper.appendChild(timeDiv);
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(contentWrapper);
+
+        container.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    function addLoadingIndicator() {
+        const container = document.getElementById('chatContainer');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message ai';
+        loadingDiv.id = 'loadingIndicator';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = '🤖';
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'message-content-wrapper';
+
+        const loadingBubble = document.createElement('div');
+        loadingBubble.className = 'message-content';
+        
+        const loading = document.createElement('div');
+        loading.className = 'loading';
+        loading.innerHTML = '<div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>';
+        
+        loadingBubble.appendChild(loading);
+        contentWrapper.appendChild(loadingBubble);
+        loadingDiv.appendChild(avatar);
+        loadingDiv.appendChild(contentWrapper);
+
+        container.appendChild(loadingDiv);
+        scrollToBottom();
+    }
+
+    function removeLoadingIndicator() {
+        const loading = document.getElementById('loadingIndicator');
+        if (loading) {
+            loading.remove();
+        }
+    }
+
+    function getCurrentTime() {
+        const now = new Date();
+        return now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollToBottom() {
+        const container = document.getElementById('chatContainer');
+        setTimeout(() => {
+            container.scrollTop = container.scrollHeight;
+        }, 100);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<span>✓</span> ${message}`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    async function ask() {
+        const questionInput = document.getElementById('question');
+        const sendBtn = document.getElementById('sendBtn');
+        const sendBtnText = document.getElementById('sendBtnText');
+        const question = questionInput.value.trim();
+
+        if (!question) {
+            return;
+        }
+
+        // Disable input while processing
+        questionInput.disabled = true;
+        sendBtn.disabled = true;
+        sendBtnText.textContent = '전송 중...';
+
+        // Add user message
+        const timestamp = getCurrentTime();
+        addMessageToUI('user', question, timestamp);
+
+        // Clear input
+        questionInput.value = '';
+
+        // Show loading
+        addLoadingIndicator();
+
+        try {
+            const res = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: question })
+            });
+
+            const data = await res.json();
+            
+            // Remove loading
+            removeLoadingIndicator();
+
+            // Add AI response
+            addMessageToUI('ai', data.answer, timestamp);
+
+            // Save to history
+            chatHistory.push({
+                question: question,
+                answer: data.answer,
+                timestamp: timestamp
+            });
+            saveChatHistory();
+
+        } catch (error) {
+            removeLoadingIndicator();
+            addMessageToUI('ai', '죄송합니다. 오류가 발생했습니다. 다시 시도해주세요. 🙏', timestamp);
+            showToast('오류가 발생했습니다');
+        } finally {
+            // Re-enable input
+            questionInput.disabled = false;
+            sendBtn.disabled = false;
+            sendBtnText.textContent = '전송 📤';
+            questionInput.focus();
+        }
+    }
+
+    function askSuggestion(question) {
+        document.getElementById('question').value = question;
+        ask();
+    }
+
+    function clearChat() {
+        if (confirm('대화 내역을 모두 지우시겠습니까?')) {
+            chatHistory = [];
+            localStorage.removeItem('jejuFarmerChat');
+            
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = `
+                <div class="welcome-message" id="welcomeMessage">
+                    <div class="welcome-icon">👋</div>
+                    <h2>안녕하세요!</h2>
+                    <p>제주 농민을 위한 AI 도우미입니다.<br>
+                    농사와 관련된 모든 질문을 편하게 해주세요.<br>
+                    실시간으로 정확한 답변을 제공해드립니다.</p>
+                    <div class="suggestion-chips">
+                        <div class="chip" onclick="askSuggestion('귤 재배 시기가 언제인가요?')">
+                            <span>🍊</span>
+                            <span>귤 재배 시기</span>
+                        </div>
+                        <div class="chip" onclick="askSuggestion('토양 pH 관리 방법을 알려주세요')">
+                            <span>🌱</span>
+                            <span>토양 관리</span>
+                        </div>
+                        <div class="chip" onclick="askSuggestion('병해충 예방은 어떻게 하나요?')">
+                            <span>🐛</span>
+                            <span>병해충 예방</span>
+                        </div>
+                        <div class="chip" onclick="askSuggestion('비료는 언제 주는 게 좋나요?')">
+                            <span>💧</span>
+                            <span>비료 시기</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateMessageCount();
+            showToast('대화 내역이 삭제되었습니다');
+        }
+    }
+
+    function exportChat() {
+        if (chatHistory.length === 0) {
+            showToast('저장할 대화 내역이 없습니다');
+            return;
+        }
+
+        let exportText = '=== 제주 농민 AI 도우미 대화 내역 ===\n\n';
+        
+        chatHistory.forEach((item, index) => {
+            exportText += `[${index + 1}] ${item.timestamp}\n`;
+            exportText += `질문: ${item.question}\n`;
+            exportText += `답변: ${item.answer}\n\n`;
+            exportText += '---\n\n';
+        });
+
+        const blob = new Blob([exportText], { type: 'text/plain;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `제주농민AI대화_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        showToast('대화 내역이 저장되었습니다');
+    }
+</script>
+```
+
+</body>
+</html>
