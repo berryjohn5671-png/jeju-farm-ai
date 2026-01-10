@@ -134,6 +134,18 @@
         margin-bottom: 15px;
     }
 
+    .powered-by {
+        position: absolute;
+        bottom: 12px;
+        right: 16px;
+        font-size: 11px;
+        font-weight: 500;
+        opacity: 0.75;
+        color: white;
+        letter-spacing: 0.2px;
+        pointer-events: none;
+    }
+
     .header-stats {
         display: flex;
         justify-content: center;
@@ -479,6 +491,12 @@
             border-radius: 0;
             height: 100vh;
         }
+        .powered-by {
+            font-size: 10px;
+            bottom: 10px;
+            right: 12px;
+        }
+
 
         body {
             padding: 0;
@@ -549,7 +567,7 @@
         font-style: italic;
     }
 </style>
-```
+
 
 </head>
 <body>
@@ -558,7 +576,7 @@
             <div class="header-content">
                 <h1>
                     <span class="header-emoji">🍊</span>
-                    제주 농장 AI 도우미
+                    제주 농장 스마트 도우미: 귤담 AI
                 </h1>
                 <p>귤 농사부터 토양 관리까지, 무엇이든 물어보세요</p>
                 <div class="header-stats">
@@ -570,6 +588,7 @@
                         <span>✨</span>
                         <span>AI 기반 농업 조언</span>
                     </div>
+                    <div class="powered-by">Powered by Teengerine Project</div>
                 </div>
                 <div class="header-controls">
                     <button class="clear-btn" onclick="clearChat()">🗑️ 대화 초기화</button>
@@ -578,12 +597,12 @@
             </div>
         </div>
 
-```
+
     <div class="chat-container" id="chatContainer">
         <div class="welcome-message" id="welcomeMessage">
             <div class="welcome-icon">👋</div>
             <h2>안녕하세요!</h2>
-            <p>제주 농민을 위한 AI 도우미입니다.<br>
+            <p>제주 농장을 위한 AI 도우미입니다.<br>
             농사와 관련된 모든 질문을 편하게 해주세요.<br>
             실시간으로 정확한 답변을 제공해드립니다.</p>
             <div class="suggestion-chips">
@@ -891,7 +910,7 @@
         showToast('대화 내역이 저장되었습니다');
     }
 </script>
-```
+
 
 </body>
 </html>
